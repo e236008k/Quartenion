@@ -3,6 +3,13 @@ import math
 
 class Quartenion:
 
+    # Class Value
+    # definition of axis number
+    w = 0
+    x = 1
+    y = 2
+    z = 3
+
     def __init__(self):
 
         self.q = np.zeros((4, 1), dtype=float)
@@ -10,11 +17,14 @@ class Quartenion:
 
     def _set_quartenion_mat(self, theta_deg, rot_axis):
 
+        #degree to radian
+        #index 0 w(real part) index 1,2,3 is x,y,z(imaginary part)
         self.q[0] = math.cos(math.radians(theta_deg/2))
         self.q[1] = math.sin(math.radians(theta_deg/2))*rot_axis[0]
         self.q[2] = math.sin(math.radians(theta_deg/2))*rot_axis[1]
         self.q[3] = math.sin(math.radians(theta_deg/2))*rot_axis[2]
 
+        #Calc Conjugated q matrix
         self.q_inv[0] = math.cos(math.radians(theta_deg/2))
         self.q_inv[1] = -math.sin(math.radians(theta_deg/2)) * rot_axis[0]
         self.q_inv[2] = -math.sin(math.radians(theta_deg/2)) * rot_axis[1]
@@ -23,12 +33,6 @@ class Quartenion:
     def _get_quartenion_mult(self, mat_1, mat_2):
 
         ret_list = np.zeros((4,1), dtype=float)
-
-        # definition of axis number
-        w = 0
-        x = 1
-        y = 2
-        z = 3
 
         # w axix(real part)
         ret_list[w] = mat_1[w] * mat_2[w] - ( mat_1[x]*mat_2[x] + mat_1[y]*mat_2[y] + mat_1[z]*mat_2[z] )
@@ -49,8 +53,10 @@ class Quartenion:
         #Quaternionの定義
         self._set_quartenion_mat(theta_deg, rot_axis)
 
+        #Quarternion q * xyz position
         ans_temp = self._get_quartenion_mult( self.q, xyz )
 
+        #ans * Conjugated Quaternion q_inv
         ans = self._get_quartenion_mult( ans_temp, self.q_inv )
 
         return ans
